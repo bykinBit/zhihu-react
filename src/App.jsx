@@ -1,7 +1,10 @@
+import React from "react";
+import { HashRouter } from "react-router-dom";
+import RouteView from "./router";
 export default function App() {
   return (
-    <>
-      <div>开始啦</div>
-    </>
+    <HashRouter>
+      <RouteView />
+    </HashRouter>
   );
 }

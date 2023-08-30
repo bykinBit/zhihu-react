@@ -50,7 +50,6 @@ const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== "false";
 
 const emitErrorsAsWarnings = process.env.ESLINT_NO_DEV_ERRORS === "true";
 const disableESLintPlugin = process.env.DISABLE_ESLINT_PLUGIN === "true";
-
 const imageInlineSizeLimit = parseInt(
   process.env.IMAGE_INLINE_SIZE_LIMIT || "10000"
 );
@@ -69,9 +68,9 @@ const swSrc = paths.swSrc;
 // style files regexes
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
-const lessRegex = /\.(scss|sass)$/;
-const lessModuleRegex = /\.module\.(scss|sass)$/;
-
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
+const px2rem = require("postcss-pxtorem");
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
     return false;
@@ -147,6 +146,10 @@ module.exports = function (webpackEnv) {
                   // so that it honors browserslist config in package.json
                   // which in turn let's users customize the target behavior as per their needs.
                   "postcss-normalize",
+                  px2rem({
+                    rootValue: 75,
+                    propList: ["*"],
+                  }),
                 ]
               : [
                   "tailwindcss",
@@ -418,6 +421,10 @@ module.exports = function (webpackEnv) {
                     require.resolve("babel-preset-react-app"),
                     {
                       runtime: hasJsxRuntime ? "automatic" : "classic",
+                      targets: {
+                        chrome: "49",
+                        ios: "10",
+                      },
                     },
                   ],
                 ],
@@ -724,7 +731,9 @@ module.exports = function (webpackEnv) {
             infrastructure: "silent",
           },
         }),
-      !disableESLintPlugin &&
+      // !disableESLintPlugin &&
+
+      false &&
         new ESLintPlugin({
           // Plugin options
           extensions: ["js", "mjs", "jsx", "ts", "tsx"],
