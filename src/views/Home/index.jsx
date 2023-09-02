@@ -7,7 +7,10 @@ import { queryNewsLatest, queryNewsBefore } from "@/api";
 import "./index.less";
 import SkeletonAgain from "../../components/SkeletonAgain";
 import NewsItem from "../../components/NewsItem";
-export default function Home() {
+import action from "@/store/action";
+import { connect } from "react-redux";
+function Home(props) {
+  const { newsList: newsListStories, saveNewsList } = props;
   const [today, setToday] = useState(
     dayjs().format("YYYY-MM-DD").replace(/\-/g, "")
   );
@@ -27,6 +30,7 @@ export default function Home() {
             stories,
           },
         ]);
+        saveNewsList([...stories]);
       } catch (error) {
         console.log(error);
       }
@@ -42,6 +46,7 @@ export default function Home() {
           let { date, stories } = await queryNewsBefore(time);
           newsList.push({ date, stories });
           setNewsList([...newsList]);
+          saveNewsList([...newsListStories, ...stories]);
         } catch (error) {
           console.log(error);
         }
@@ -111,3 +116,4 @@ export default function Home() {
     </div>
   );
 }
+export default connect((state) => state.base, action.base)(Home);

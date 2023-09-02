@@ -9,7 +9,7 @@ export default function NewsItem(props) {
   if (!images) images = [];
   return (
     <div className="news-item-box">
-      <Link to={{ pathname: `detail/${id}` }}>
+      <Link to={{ pathname: `/detail/${id}` }}>
         <div className="content">
           <h4 className="title">{title}</h4>
           <p className="author">{hint}</p>

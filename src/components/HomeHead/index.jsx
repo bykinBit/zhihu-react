@@ -1,8 +1,12 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import "./index.less";
 import hdImg from "@/assets/image/client-user.png";
-export default function HomeHead(props) {
-  const { today } = props;
+import { connect } from "react-redux";
+import action from "@/store/action";
+import { useNavigate } from "react-router-dom";
+function HomeHead(props) {
+  const { today, info, queryUserInfoAsync } = props;
+  const navigate = useNavigate();
   let time = useMemo(() => {
     const [_, month, day] = today.match(/^\d{4}(\d{2})(\d{2})$/);
     const area = [
@@ -25,6 +29,11 @@ export default function HomeHead(props) {
       day,
     };
   }, [today]);
+  useEffect(() => {
+    if (!info) {
+      queryUserInfoAsync();
+    }
+  }, []);
   return (
     <header className="home-head">
       <div className="info">
@@ -34,9 +43,15 @@ export default function HomeHead(props) {
         </div>
         <h2 className="title">知乎日报</h2>
       </div>
-      <div className="picture">
-        <img src={hdImg} />
+      <div
+        className="picture"
+        onClick={() => {
+          navigate("/personal");
+        }}
+      >
+        <img src={info?.avatar ? info?.avatar : hdImg} />
       </div>
     </header>
   );
 }
+export default connect((state) => state.base, { ...action.base })(HomeHead);
